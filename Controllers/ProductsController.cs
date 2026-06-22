@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using dotnetProject.Data;
 using dotnetProject.Models;
 using Microsoft.EntityFrameworkCore;
+using dotnetProject.DTO;
 
 namespace dotnetProject.Controllers;
 
@@ -30,8 +31,15 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Product>> CreateProduct(Product product)
+    public async Task<ActionResult<Product>> CreateProduct(CreateProductDto productDto)
     {
+        var product = new Product
+        {
+            Name = productDto.Name,
+            Price = productDto.Price,
+            Description = productDto.Description
+        };
+
         _context.Products.Add(product);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetProduct), new { id = product.ID }, product);
