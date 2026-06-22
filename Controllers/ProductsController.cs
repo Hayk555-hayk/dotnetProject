@@ -44,4 +44,40 @@ public class ProductsController : ControllerBase
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetProduct), new { id = product.ID }, product);
     }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<Product>> UpdateProduct(int id, UpdateProductDto productDto)
+    {
+        var product = await _context.Products.FindAsync(id);
+
+        if(product == null)
+        {
+            return NotFound(new {message = "Product not found"});
+        }
+
+        product.Name = productDto.Name;
+        product.Description = productDto.Description;
+        product.Price = productDto.Price;
+
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<Product>> DeleteProduct(int id)
+    {
+        var product = await _context.Products.FindAsync(id);
+
+        if(product == null)
+        {
+            return NotFound(new {message = "Product not found"});
+        }
+
+        _context.Remove(product);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }
