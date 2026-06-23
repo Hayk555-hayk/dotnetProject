@@ -18,9 +18,21 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Product>>> GetProducts()
+    public async Task<ActionResult<List<Product>>> GetProducts([FromQuery] string? search, [FromQuery] decimal? maxPrice)
     {
-        return await _context.Products.ToListAsync();
+        var query = _context.Products.AsQueryable();
+
+        if(!string.IsNullOrEmpty(search))
+        {
+            query = query.Where(p => p.Name == search);
+        }
+
+        if(maxPrice.HasValue)
+        {
+            query = query.Where(p => p.Price <= maxPrice);
+        }
+
+        return await query.ToListAsync();
     }
 
     [HttpGet("{id}")]
