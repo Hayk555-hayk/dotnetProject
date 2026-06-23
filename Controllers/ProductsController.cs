@@ -24,7 +24,7 @@ public class ProductsController : ControllerBase
 
         if(!string.IsNullOrEmpty(search))
         {
-            query = query.Where(p => p.Name == search);
+            query = query.Where(p => p.Name.Contains(search));
         }
 
         if(maxPrice.HasValue)
