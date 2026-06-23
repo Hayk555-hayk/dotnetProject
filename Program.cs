@@ -24,6 +24,8 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
+app.UseMiddleware<dotnetProject.Middleware.ExeptionHandlingMiddleware>();
+
 app.MapControllers();
 app.UseCors("AllowReactApp");
 
