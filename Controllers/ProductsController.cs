@@ -3,6 +3,7 @@ using dotnetProject.Data;
 using dotnetProject.Models;
 using Microsoft.EntityFrameworkCore;
 using dotnetProject.DTO;
+using dotnetProject.Repositories;
 
 namespace dotnetProject.Controllers
 {
@@ -10,36 +11,27 @@ namespace dotnetProject.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IProductRepository _repository;
 
-        public ProductsController(AppDbContext context)
+        public ProductsController(IProductRepository repository)
         {
-            this._context = context;
+            this._repository = repository;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProducts([FromQuery] string? search, [FromQuery] decimal? maxPrice)
         {
-            var query = _context.Products.AsQueryable();
-
-            if (!string.IsNullOrEmpty(search))
-            {
-                query = query.Where(p => p.Name.Contains(search));
-            }
-
-            if (maxPrice.HasValue)
-            {
-                query = query.Where(p => p.Price <= maxPrice);
-            }
-
-            return await query.ToListAsync();
+            var products = await _repository.GetProducts(search, maxPrice);
+            return Ok(products);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            return product is Product foundProduct ? Ok(foundProduct) : NotFound();
+            var product = await _repository.GetByIdAsync(id);
+            if (product == null) return NotFound(new { message = $"Товар с Id {id} не найден" });
+
+            return Ok(product);
         }
 
         [HttpPost]
@@ -52,27 +44,21 @@ namespace dotnetProject.Controllers
                 Description = productDto.Description
             };
 
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
+            await _repository.AddAsync(product);
             return CreatedAtAction(nameof(GetProduct), new { id = product.ID }, product);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<Product>> UpdateProduct(int id, UpdateProductDto productDto)
         {
-            var product = await _context.Products.FindAsync(id);
-
-            if (product == null)
-            {
-                return NotFound(new { message = "Product not found" });
-            }
+            var product = await _repository.GetByIdAsync(id);
+            if (product == null) return NotFound(new { message = $"Товар с Id {id} не найден" });
 
             product.Name = productDto.Name;
-            product.Description = productDto.Description;
             product.Price = productDto.Price;
+            product.Description = productDto.Description;
 
-            await _context.SaveChangesAsync();
-
+            await _repository.UpdateAsync(product);
             return NoContent();
 
         }
@@ -80,16 +66,10 @@ namespace dotnetProject.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Product>> DeleteProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _repository.GetByIdAsync(id);
+            if (product == null) return NotFound(new { message = $"Товар с Id {id} не найден" });
 
-            if (product == null)
-            {
-                return NotFound(new { message = "Product not found" });
-            }
-
-            _context.Remove(product);
-            await _context.SaveChangesAsync();
-
+            await _repository.DeleteAsync(product);
             return NoContent();
         }
     }

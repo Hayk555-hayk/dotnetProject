@@ -1,10 +1,11 @@
 using dotnetProject.Data;
+using dotnetProject.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 builder.Services.AddCors(options =>
 {
