@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using dotnetProject.Models;
+using dotnetProject.Domain.Entities;
 
-namespace dotnetProject.Data
+namespace dotnetProject.Infrastructure.Data
 {
     public class AppDbContext : DbContext
     {

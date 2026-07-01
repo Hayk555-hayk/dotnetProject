@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using dotnetProject.Data;
-using dotnetProject.Models;
-using Microsoft.EntityFrameworkCore;
+using dotnetProject.Domain.Entities;
 using dotnetProject.DTO;
-using dotnetProject.Repositories;
+using dotnetProject.Application.Interfaces;
 
 namespace dotnetProject.Controllers
 {

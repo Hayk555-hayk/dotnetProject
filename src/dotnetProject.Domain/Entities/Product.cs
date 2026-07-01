@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace dotnetProject.Models
+namespace dotnetProject.Domain.Entities
 {
     public class Product
     {

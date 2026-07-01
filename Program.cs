@@ -1,5 +1,6 @@
-using dotnetProject.Data;
-using dotnetProject.Repositories;
+using dotnetProject.Application.Interfaces;
+using dotnetProject.Infrastructure.Data;
+using dotnetProject.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -25,9 +26,8 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-app.UseMiddleware<dotnetProject.Middleware.ExeptionHandlingMiddleware>();
-
-app.MapControllers();
 app.UseCors("AllowReactApp");
+app.UseMiddleware<dotnetProject.Middleware.ExeptionHandlingMiddleware>();
+app.MapControllers();
 
 app.Run();

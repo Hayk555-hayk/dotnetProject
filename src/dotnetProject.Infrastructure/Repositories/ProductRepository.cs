@@ -1,8 +1,9 @@
-using dotnetProject.Data;
-using dotnetProject.Models;
+using dotnetProject.Infrastructure.Data;
+using dotnetProject.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using dotnetProject.Application.Interfaces;
 
-namespace dotnetProject.Repositories
+namespace dotnetProject.Infrastructure.Repositories
 {
     public class ProductRepository : IProductRepository
     {

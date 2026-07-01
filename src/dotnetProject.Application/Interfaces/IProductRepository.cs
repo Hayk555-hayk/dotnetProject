@@ -1,6 +1,6 @@
-using dotnetProject.Models;
+using dotnetProject.Domain.Entities;
 
-namespace dotnetProject.Repositories
+namespace dotnetProject.Application.Interfaces
 {
     public interface IProductRepository
     {
